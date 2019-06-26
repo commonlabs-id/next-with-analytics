@@ -64,14 +64,14 @@ Set to `true` to make the module respect Do Not Track (DNT). This will prevent `
 
 ## Using Analytics helpers
 
-This HOC injects several analytics helper functions into your page. You can access it from `this.props.analytics`. Typings for TypeScript projects are also available as `WithAnalyticsProps`.
+This HOC injects several analytics helper functions into your page. You can access it from the `analytics` prop. Typings for TypeScript projects are also available as `WithAnalyticsState`.
 
 ```jsx
 import Link from 'next/link';
 
 function IndexPage({ analytics }) {
   const handleClick = () => {
-    if (analytics.event) {
+    if (analytics) {
       analytics.event('Button Click', 'Signup to Platform');
     }
   };

@@ -32,7 +32,7 @@ const isDntEnabled =
   (typeof window.navigator !== 'undefined' && window.navigator.doNotTrack === '1');
 
 export interface WithAnalyticsState {
-  analytics?: AnalyticsHelpers;
+  analytics?: Partial<AnalyticsHelpers>;
 }
 
 export function withAnalytics<P extends {}>(

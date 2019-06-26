@@ -5,8 +5,6 @@ export interface AnalyticsHelpers {
   exception: (description?: string, fatal?: boolean) => void;
 }
 
-export type WithAnalyticsProps = Partial<AnalyticsHelpers>;
-
 export interface WithAnalyticsConfig {
   trackingCode?: string;
   respectDNT?: boolean;

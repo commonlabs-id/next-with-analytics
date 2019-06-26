@@ -19,15 +19,37 @@ npm install --save @pinjollist/next-with-analytics
 To use it, wrap your `_app` page with the HOC, passing the `next/router` instance, and some preferred options.
 
 ```jsx
-// pages/app.js
+// pages/_app.js
 
-// ...
+import App from 'next/app';
+import Router from 'next/router';
 
 const options = {
   trackingCode: process.env.GOOGLE_ANALYTICS,
   respectDNT: true,
 };
 const nextWithAnalytics = withAnalytics(Router, options);
+
+class MyApp extends App {
+  static async getInitialProps({ Component, ctx }) {
+    let pageProps = {};
+    if (Component.getInitialProps) {
+      pageProps = await Component.getInitialProps(ctx);
+    }
+    return { pageProps };
+  }
+
+  render() {
+    const { Component, pageProps, analytics } = this.props;
+    return (
+      <Container>
+        <Component analytics={analytics} {...pageProps} />
+      </Container>
+    );
+  }
+}
+
+export default nextWithAnalytics(MyApp);
 ```
 
 ### Options
@@ -69,4 +91,26 @@ function IndexPage({ analytics }) {
 
 ### List of Helpers
 
-[TODO]
+#### init
+
+`function init(trackingCode?: string | undefined): void`
+
+Initializes Next.js analytics.
+
+#### pageview
+
+`function pageview(): void`
+
+Tracks pageview. Can be called e.g. on router location change.
+
+#### event
+
+`function event(category?: string, action?: string): void`
+
+Sends a Google Analytics [event](https://developers.google.com/analytics/devguides/collection/analyticsjs/events).
+
+#### exception
+
+`function exception(description?: string, fatal?: boolean): void`
+
+Sends a Google Analytics [exception event](https://developers.google.com/analytics/devguides/collection/analyticsjs/exceptions) for tracking exceptions.

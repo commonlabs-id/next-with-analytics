@@ -23,6 +23,7 @@ To use it, wrap your `_app` page with the HOC, passing the `next/router` instanc
 
 import App from 'next/app';
 import Router from 'next/router';
+import { withAnalytics } from '@pinjollist/next-with-analytics';
 
 const options = {
   trackingCode: process.env.GOOGLE_ANALYTICS,

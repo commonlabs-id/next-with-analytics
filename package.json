@@ -1,6 +1,6 @@
 {
   "name": "@pinjollist/next-with-analytics",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Minimalistic analytics helper for Next.js which respects Do Not Track (DNT) headers.",
   "main": "dist/index.js",
   "umd:main": "dist/next-analytics.umd.production.js",

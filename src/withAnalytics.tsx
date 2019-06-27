@@ -35,7 +35,7 @@ export interface WithAnalyticsState {
   analytics?: Partial<AnalyticsHelpers>;
 }
 
-export function withAnalytics<P extends {}>(
+export function withAnalytics<P extends any>(
   Router: SingletonRouter,
   config: WithAnalyticsConfig = {},
 ) {

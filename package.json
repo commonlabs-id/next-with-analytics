@@ -8,6 +8,12 @@
   "typings": "dist/index.d.ts",
   "license": "MIT",
   "author": "Resi Respati <resir014@gmail.com>",
+  "homepage": "https://github.com/pinjollist/next-with-analytics",
+  "bugs": "https://github.com/pinjollist/next-with-analytics/issues",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/pinjollist/next-with-analytics.git"
+  },
   "keywords": [
     "nextjs",
     "next",

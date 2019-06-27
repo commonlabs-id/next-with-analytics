@@ -1,5 +1,8 @@
 # next-with-analytics
 
+![CircleCI](https://img.shields.io/circleci/build/github/pinjollist/next-with-analytics.svg)
+![Codecov](https://img.shields.io/codecov/c/gh/pinjollist/next-with-analytics.svg)
+
 > Minimalistic analytics helper for Next.js which respects Do Not Track (DNT) headers.
 
 `next-with-analytics` is a tiny HOC that wraps a Next.js application with `react-ga` and some useful analytics helpers. It also allows you to respect Do Not Track (DNT) settings for visitors that have them enabled.

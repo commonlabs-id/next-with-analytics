@@ -1,4 +1,5 @@
-version: 2
+version: 2.1
+
 jobs:
   build:
     docker:
@@ -30,3 +31,8 @@ jobs:
       - run:
           name: Run tests
           command: yarn test --coverage
+
+      - run:
+          context: pinjollist-codecov
+          name: Upload Coverage
+          command: yarn report-coverage

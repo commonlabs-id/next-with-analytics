@@ -29,6 +29,10 @@ jobs:
 
       # run tests!
       - run:
+          name: Lint & Typecheck
+          command: yarn lint && yarn type-check
+
+      - run:
           name: Run tests
           command: yarn test --coverage
 

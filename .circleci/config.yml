@@ -1,8 +1,5 @@
 version: 2.1
 
-orbs:
-  codecov: codecov/codecov@1.0.2
-
 jobs:
   build:
     docker:
@@ -35,6 +32,7 @@ jobs:
           name: Run tests
           command: yarn test --coverage
 
-      - codecov/upload:
-          file: { { coverage_report_filepath } }
+      - run:
           context: pinjollist-codecov
+          name: Upload Coverage
+          command: yarn report-coverage

@@ -118,3 +118,11 @@ Sends a Google Analytics [event](https://developers.google.com/analytics/devguid
 `function exception(description?: string, fatal?: boolean): void`
 
 Sends a Google Analytics [exception event](https://developers.google.com/analytics/devguides/collection/analyticsjs/exceptions) for tracking exceptions.
+
+## Contributing
+
+Contributions and Pull Requests welcome! Please read the [Contributing Guidelines](CONTRIBUTING.md) beforehand.
+
+## License
+
+[MIT](LICENSE) &copy; Resi Respati.

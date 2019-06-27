@@ -14,6 +14,66 @@ The simple steps of contributing to any GitHub project are as follows:
 
 To keep your fork of in sync with this repository, [follow this guide](https://help.github.com/articles/syncing-a-fork/).
 
+## Prerequisites
+
+### Windows, macOS and Linux
+
+- [Git](http://git-scm.com/)
+- [Node.js](http://nodejs.org/) (8.0.0+)
+- [Yarn](https://yarnpkg.com/)
+- Text Editor with [EditorConfig](http://editorconfig.org/) & [Prettier](https://prettier.io/) support. (We recommend [Visual Studio Code](https://code.visualstudio.com/))
+
+#### Prerequisite Check
+
+Run these commands inside the Terminal (PowerShell/Command Prompt for Windows).
+
+**Git:** You should see the version number:
+
+```sh-session
+$ git version
+git version 2.18.0
+```
+
+**Node.js:** You should see the version number:
+
+```sh-session
+$ node -v
+v10.16.0
+```
+
+**Yarn:** You should see the version number:
+
+```sh-session
+$ yarn -v
+1.16.0
+```
+
+## Setting Up
+
+First, you should clone the repository.
+
+```sh-session
+$ git clone https://github.com/pinjhollist/next-with-analytics.git
+Cloning into 'next-with-analytics'...
+remote: Enumerating objects: 61, done.
+remote: Counting objects: 100% (61/61), done.
+remote: Compressing objects: 100% (43/43), done.
+remote: Total 61 (delta 22), reused 51 (delta 13), pack-reused 0
+Unpacking objects: 100% (61/61), done.
+```
+
+After these repository has been cloned, `cd` into the repository:
+
+```sh-session
+$ cd next-with-analytics
+```
+
+Install the project's dependencies. Note that we use Yarn, not npm:
+
+```sh-session
+$ yarn
+```
+
 ## Local Development
 
 Below is a list of commands you will probably find useful.

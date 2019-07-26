@@ -2,7 +2,6 @@
 
 import * as React from 'react';
 import { NextPage } from 'next';
-import App, { Container } from 'next/app';
 import { render, cleanup } from '@testing-library/react';
 
 import Router from 'next/router';
@@ -24,24 +23,6 @@ describe('withAnalytics', () => {
   test('renders correctly', () => {
     const TestPage: NextPage = () => <div>Example page</div>;
     const WithAnalytics = withAnalytics(Router)(TestPage);
-    const { container } = render(<WithAnalytics />);
-
-    expect(container).toBeInTheDocument();
-  });
-  test('renders correctly with App', () => {
-    class TestApp extends App {
-      public render() {
-        const { Component, pageProps } = this.props;
-
-        return (
-          <Container>
-            <Component {...pageProps} />
-          </Container>
-        );
-      }
-    }
-
-    const WithAnalytics = withAnalytics(Router)(TestApp);
     const { container } = render(<WithAnalytics />);
 
     expect(container).toBeInTheDocument();

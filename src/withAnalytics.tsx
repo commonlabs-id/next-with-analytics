@@ -2,6 +2,7 @@
 /* eslint-disable no-restricted-globals */
 
 import React from 'react';
+import App, { AppProps } from 'next/app';
 import { SingletonRouter } from 'next/router';
 
 import * as debugAnalytics from './helpers/debug';
@@ -34,19 +35,14 @@ export interface WithAnalyticsState {
   analytics?: Partial<AnalyticsHelpers>;
 }
 
-export function withAnalytics<P extends {}>(
-  Router: SingletonRouter,
-  config: WithAnalyticsConfig = {},
-) {
-  return (WrappedComponent: any) => {
-    return class extends React.Component<P & WithAnalyticsState, WithAnalyticsState> {
-      public static displayName = `withAuthSync(${getDisplayName(WrappedComponent)})`;
-
-      public static getInitialProps = WrappedComponent.getInitialProps;
+export function withAnalytics(Router: SingletonRouter, config: WithAnalyticsConfig = {}) {
+  return (WrappedComponent: typeof App) => {
+    return class extends React.Component<AppProps & WithAnalyticsState, WithAnalyticsState> {
+      public static displayName = `withAnalytics(${getDisplayName(WrappedComponent)})`;
 
       public analytics: AnalyticsHelpers | undefined = undefined;
 
-      public constructor(props: P) {
+      public constructor(props: AppProps) {
         super(props);
 
         this.state = {

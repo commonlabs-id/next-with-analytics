@@ -1,7 +1,6 @@
 /* eslint-disable import/no-extraneous-dependencies */
 
 import * as React from 'react';
-import { NextPage } from 'next';
 import { render, cleanup } from '@testing-library/react';
 
 import Router from 'next/router';
@@ -21,8 +20,8 @@ afterEach(cleanup);
 
 describe('withAnalytics', () => {
   test('renders correctly', () => {
-    const TestPage: NextPage = () => <div>Example page</div>;
-    const WithAnalytics = withAnalytics(Router)(TestPage);
+    const TestApp: any = () => <div>h</div>;
+    const WithAnalytics: any = withAnalytics(Router)(TestApp);
     const { container } = render(<WithAnalytics />);
 
     expect(container).toBeInTheDocument();

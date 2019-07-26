@@ -2,7 +2,6 @@
 /* eslint-disable no-restricted-globals */
 
 import React from 'react';
-import { NextComponentType } from 'next';
 import { SingletonRouter } from 'next/router';
 
 import * as debugAnalytics from './helpers/debug';
@@ -35,19 +34,17 @@ export interface WithAnalyticsState {
   analytics?: Partial<AnalyticsHelpers>;
 }
 
-export function withAnalytics<P extends any>(
+export function withAnalytics<P extends {}>(
   Router: SingletonRouter,
   config: WithAnalyticsConfig = {},
 ) {
-  return (
-    WrappedComponent:
-      | NextComponentType<P & WithAnalyticsState, P>
-      | React.ComponentType<P & WithAnalyticsState>,
-  ) => {
+  return (WrappedComponent: any) => {
     return class extends React.Component<P & WithAnalyticsState, WithAnalyticsState> {
       public static displayName = `withAuthSync(${getDisplayName(WrappedComponent)})`;
 
-      public static getInitialProps = (WrappedComponent as NextComponentType).getInitialProps;
+      public static getInitialProps = WrappedComponent.getInitialProps;
+
+      public analytics: AnalyticsHelpers | undefined = undefined;
 
       public constructor(props: P) {
         super(props);
@@ -58,42 +55,39 @@ export function withAnalytics<P extends any>(
       }
 
       public componentDidMount() {
-        let analytics: AnalyticsHelpers | undefined;
-
         if (isDev || isLocalhost) {
-          analytics = debugAnalytics;
+          this.analytics = debugAnalytics;
         }
 
         if (!isDntEnabled || !config.respectDNT) {
           // Only load analytics if we're sure DNT is not enabled AND respectDNT is enabled
-          analytics = prodAnalytics;
+          this.analytics = prodAnalytics;
         }
 
-        if (analytics) {
+        if (this.analytics) {
           // init analytics
-          analytics.init(config.trackingCode);
+          this.analytics.init(config.trackingCode);
           // log page
-          analytics.pageview();
-
-          // save possible previously defined callback
-          const previousCallback = Router.onRouteChangeComplete;
-          Router.onRouteChangeComplete = url => {
-            // call previously defined callback if is a function
-            if (typeof previousCallback === 'function') {
-              previousCallback(url);
-            }
-
-            if (analytics) {
-              // log page
-              analytics.pageview();
-            }
-          };
+          this.analytics.pageview();
 
           this.setState({
-            analytics,
+            analytics: this.analytics,
           });
         }
+
+        Router.events.on('routeChangeComplete', this.handleRouteChange);
       }
+
+      public componentWillUnmount() {
+        Router.events.off('routeChangeComplete', this.handleRouteChange);
+      }
+
+      public handleRouteChange = () => {
+        if (this.analytics) {
+          // log page
+          this.analytics.pageview();
+        }
+      };
 
       public render() {
         const { analytics } = this.state;

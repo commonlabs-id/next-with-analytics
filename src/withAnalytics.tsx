@@ -42,6 +42,8 @@ export function withAnalytics(Router: SingletonRouter, config: WithAnalyticsConf
 
       public analytics: AnalyticsHelpers | undefined = undefined;
 
+      public static getInitialProps = WrappedComponent.getInitialProps || undefined;
+
       public constructor(props: AppProps) {
         super(props);
 

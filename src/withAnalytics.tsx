@@ -37,58 +37,44 @@ export interface WithAnalyticsState {
 
 export function withAnalytics(Router: SingletonRouter, config: WithAnalyticsConfig = {}) {
   return (WrappedComponent: typeof App) => {
-    return class extends React.Component<AppProps & WithAnalyticsState, WithAnalyticsState> {
-      public static displayName = `withAnalytics(${getDisplayName(WrappedComponent)})`;
+    function Enhancer(props: AppProps) {
+      const [analytics, setAnalytics] = React.useState<AnalyticsHelpers | undefined>(undefined);
 
-      public analytics: AnalyticsHelpers | undefined = undefined;
+      const handleRouteChange = () => {
+        if (analytics) {
+          // log page
+          analytics.pageview();
+        }
+      };
 
-      public constructor(props: AppProps) {
-        super(props);
-
-        this.state = {
-          analytics: undefined,
-        };
-      }
-
-      public componentDidMount() {
+      React.useEffect(() => {
         if (isDev || isLocalhost) {
-          this.analytics = debugAnalytics;
+          setAnalytics(debugAnalytics);
         }
 
         if (!isDntEnabled || !config.respectDNT) {
           // Only load analytics if we're sure DNT is not enabled AND respectDNT is enabled
-          this.analytics = prodAnalytics;
+          setAnalytics(prodAnalytics);
         }
 
-        if (this.analytics) {
+        if (analytics) {
           // init analytics
-          this.analytics.init(config.trackingCode);
+          analytics.init(config.trackingCode);
           // log page
-          this.analytics.pageview();
-
-          this.setState({
-            analytics: this.analytics,
-          });
+          analytics.pageview();
         }
 
-        Router.events.on('routeChangeComplete', this.handleRouteChange);
-      }
+        Router.events.on('routeChangeComplete', handleRouteChange);
 
-      public componentWillUnmount() {
-        Router.events.off('routeChangeComplete', this.handleRouteChange);
-      }
+        return () => {
+          Router.events.off('routeChangeComplete', handleRouteChange);
+        };
+      }, []);
 
-      public handleRouteChange = () => {
-        if (this.analytics) {
-          // log page
-          this.analytics.pageview();
-        }
-      };
+      return <WrappedComponent {...props} analytics={analytics} />;
+    }
 
-      public render() {
-        const { analytics } = this.state;
-        return <WrappedComponent {...this.props} analytics={analytics} />;
-      }
-    };
+    Enhancer.displayName = `withAnalytics(${getDisplayName(WrappedComponent)})`;
+    return Enhancer;
   };
 }

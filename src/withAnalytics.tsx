@@ -37,44 +37,58 @@ export interface WithAnalyticsState {
 
 export function withAnalytics(Router: SingletonRouter, config: WithAnalyticsConfig = {}) {
   return (WrappedComponent: typeof App) => {
-    function Enhancer(props: AppProps) {
-      const [analytics, setAnalytics] = React.useState<AnalyticsHelpers | undefined>(undefined);
+    return class extends React.Component<AppProps & WithAnalyticsState, WithAnalyticsState> {
+      public static displayName = `withAnalytics(${getDisplayName(WrappedComponent)})`;
 
-      const handleRouteChange = () => {
-        if (analytics) {
-          // log page
-          analytics.pageview();
-        }
-      };
+      public analytics: AnalyticsHelpers | undefined = undefined;
 
-      React.useEffect(() => {
+      public constructor(props: AppProps) {
+        super(props);
+
+        this.state = {
+          analytics: undefined,
+        };
+      }
+
+      public componentDidMount() {
         if (isDev || isLocalhost) {
-          setAnalytics(debugAnalytics);
+          this.analytics = debugAnalytics;
         }
 
         if (!isDntEnabled || !config.respectDNT) {
           // Only load analytics if we're sure DNT is not enabled AND respectDNT is enabled
-          setAnalytics(prodAnalytics);
+          this.analytics = prodAnalytics;
         }
 
-        if (analytics) {
+        if (this.analytics) {
           // init analytics
-          analytics.init(config.trackingCode);
+          this.analytics.init(config.trackingCode);
           // log page
-          analytics.pageview();
+          this.analytics.pageview();
+
+          this.setState({
+            analytics: this.analytics,
+          });
         }
 
-        Router.events.on('routeChangeComplete', handleRouteChange);
+        Router.events.on('routeChangeComplete', this.handleRouteChange);
+      }
 
-        return () => {
-          Router.events.off('routeChangeComplete', handleRouteChange);
-        };
-      }, []);
+      public componentWillUnmount() {
+        Router.events.off('routeChangeComplete', this.handleRouteChange);
+      }
 
-      return <WrappedComponent {...props} analytics={analytics} />;
-    }
+      public handleRouteChange = () => {
+        if (this.analytics) {
+          // log page
+          this.analytics.pageview();
+        }
+      };
 
-    Enhancer.displayName = `withAnalytics(${getDisplayName(WrappedComponent)})`;
-    return Enhancer;
+      public render() {
+        const { analytics } = this.state;
+        return <WrappedComponent {...this.props} analytics={analytics} />;
+      }
+    };
   };
 }

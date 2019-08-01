@@ -153,6 +153,10 @@ The Google Analytics tracking code of your website. Default: `''`
 
 Set to `true` to make the module respect Do Not Track (DNT). This will prevent `react-ga` to be initialised if your browser has DNT enabled. Default: `false`
 
+#### `anonymizeIp?: boolean`
+
+Set to `true` to enable [\_anonymizeIp](https://support.google.com/analytics/answer/2763052) in Google Analytics, an option which is often important for legal reasons (e.g. GDPR)
+
 ## Using Analytics helpers
 
 You can add the provided Analytics helpers directly into the `analytics` prop in the Next.js `_app` page. Typings for TypeScript projects are also available as `WithAnalyticsState`.

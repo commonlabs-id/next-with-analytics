@@ -43,6 +43,10 @@ export function initAnalytics(config: WithAnalyticsConfig = {}): AnalyticsInstan
     analytics.init(config.trackingCode);
     // log page for first view
     analytics.pageview();
+
+    if (config.anonymizeIp) {
+      analytics.ga('set', 'anonymizeIp', true);
+    }
   }
 
   const handleRouteChange = () => {

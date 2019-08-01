@@ -26,6 +26,11 @@ export interface AnalyticsInstance {
   handleRouteChange: () => void;
 }
 
+/**
+ * Create an analytics instance with any options passed into it.
+ *
+ * @param config Optional configurations.
+ */
 export function initAnalytics(config: WithAnalyticsConfig = {}): AnalyticsInstance {
   let analytics: AnalyticsHelpers | undefined;
 
@@ -43,6 +48,10 @@ export function initAnalytics(config: WithAnalyticsConfig = {}): AnalyticsInstan
     analytics.init(config.trackingCode);
     // log page for first view
     analytics.pageview();
+
+    if (config.anonymizeIp) {
+      analytics.ga('set', 'anonymizeIp', true);
+    }
   }
 
   const handleRouteChange = () => {

@@ -19,3 +19,7 @@ export function exception(description = '', fatal = false) {
     `[Analytics] ${fatal ? 'Fatal exception' : 'Exception'} with description ${description}`,
   );
 }
+
+export function ga(...args: any[]) {
+  console.log(`[Analytics] Called 'ga' function with args ${JSON.stringify(args)}`);
+}

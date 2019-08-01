@@ -17,7 +17,12 @@ export interface WithAnalyticsState {
 }
 
 /**
- * Wraps your entire app with the Analytics instance
+ * Wraps your entire app with the Analytics instance.
+ *
+ * **IMPORTANT:** Note that on Next.js 9 and above, this will disable the
+ * [Automatic Static Optimization](https://nextjs.org/docs#automatic-prerendering) feature, since it
+ * will also try to modify `getInitialProps` in all pages. This HOC remains available to ensure
+ * backwards compatibility with Next.js 8.
  */
 export function withAnalytics(Router: SingletonRouter, config: WithAnalyticsConfig = {}) {
   return (WrappedComponent: typeof App) => {

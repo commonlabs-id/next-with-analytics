@@ -25,3 +25,7 @@ export function exception(description = '', fatal = false) {
     ReactGA.exception({ description, fatal });
   }
 }
+
+export function ga(...args: any[]) {
+  ReactGA.ga(...args);
+}

@@ -26,6 +26,11 @@ export interface AnalyticsInstance {
   handleRouteChange: () => void;
 }
 
+/**
+ * Create an analytics instance with any options passed into it.
+ *
+ * @param config Optional configurations.
+ */
 export function initAnalytics(config: WithAnalyticsConfig = {}): AnalyticsInstance {
   let analytics: AnalyticsHelpers | undefined;
 

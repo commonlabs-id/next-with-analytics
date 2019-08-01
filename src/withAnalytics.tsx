@@ -5,44 +5,28 @@ import React from 'react';
 import App, { AppProps } from 'next/app';
 import { SingletonRouter } from 'next/router';
 
-import * as debugAnalytics from './helpers/debug';
-import * as prodAnalytics from './helpers/prod';
 import { WithAnalyticsConfig, AnalyticsHelpers } from './types';
 import getDisplayName from './utils/getDisplayName';
+import { initAnalytics } from './analytics';
 
 // This actually follows a similar pattern as https://github.com/sergiodxa/next-ga, but we added
 // an option to let the analytics respect Do Not Track (DNT) requests.
-
-const isLocalhost =
-  typeof window !== 'undefined' &&
-  Boolean(
-    window.location.hostname === 'localhost' ||
-      // [::1] is the IPv6 localhost address.
-      window.location.hostname === '[::1]' ||
-      // 127.0.0.1/8 is considered localhost for IPv4.
-      window.location.hostname.match(/^127(?:\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}$/),
-  );
-
-const isDev = process.env.NODE_ENV !== 'production';
-
-const isDntEnabled =
-  // Do not add Google Analytics when building the static site...
-  typeof window === 'undefined' ||
-  // ...or when DoNotTrack is enabled:
-  (typeof window.navigator !== 'undefined' && window.navigator.doNotTrack === '1');
 
 export interface WithAnalyticsState {
   analytics?: Partial<AnalyticsHelpers>;
 }
 
+/**
+ * Wraps your entire app with the Analytics instance
+ */
 export function withAnalytics(Router: SingletonRouter, config: WithAnalyticsConfig = {}) {
   return (WrappedComponent: typeof App) => {
     return class extends React.Component<AppProps & WithAnalyticsState, WithAnalyticsState> {
       public static displayName = `withAnalytics(${getDisplayName(WrappedComponent)})`;
 
-      public analytics: AnalyticsHelpers | undefined = undefined;
-
       public static getInitialProps = WrappedComponent.getInitialProps || undefined;
+
+      public analyticsInstance = initAnalytics(config);
 
       public constructor(props: AppProps) {
         super(props);
@@ -53,39 +37,22 @@ export function withAnalytics(Router: SingletonRouter, config: WithAnalyticsConf
       }
 
       public componentDidMount() {
-        if (isDev || isLocalhost) {
-          this.analytics = debugAnalytics;
-        }
+        const { analytics, handleRouteChange } = this.analyticsInstance;
 
-        if (!isDntEnabled || !config.respectDNT) {
-          // Only load analytics if we're sure DNT is not enabled AND respectDNT is enabled
-          this.analytics = prodAnalytics;
-        }
-
-        if (this.analytics) {
-          // init analytics
-          this.analytics.init(config.trackingCode);
-          // log page
-          this.analytics.pageview();
-
+        if (analytics) {
           this.setState({
-            analytics: this.analytics,
+            analytics,
           });
         }
 
-        Router.events.on('routeChangeComplete', this.handleRouteChange);
+        Router.events.on('routeChangeComplete', handleRouteChange);
       }
 
       public componentWillUnmount() {
-        Router.events.off('routeChangeComplete', this.handleRouteChange);
-      }
+        const { handleRouteChange } = this.analyticsInstance;
 
-      public handleRouteChange = () => {
-        if (this.analytics) {
-          // log page
-          this.analytics.pageview();
-        }
-      };
+        Router.events.off('routeChangeComplete', handleRouteChange);
+      }
 
       public render() {
         const { analytics } = this.state;

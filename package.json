@@ -47,7 +47,7 @@
     "react-ga": "^2.6.0"
   },
   "devDependencies": {
-    "@testing-library/react": "^8.0.4",
+    "@testing-library/react": "^9.3.1",
     "@types/jest": "^24.0.15",
     "@types/react": "^16.8.22",
     "@types/react-dom": "^16.8.4",

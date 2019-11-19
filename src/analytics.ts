@@ -31,7 +31,7 @@ export interface AnalyticsInstance {
  *
  * @param config Optional configurations.
  */
-export function initAnalytics(config: WithAnalyticsConfig = {}): AnalyticsInstance {
+export default function initAnalytics(config: WithAnalyticsConfig = {}): AnalyticsInstance {
   let analytics: AnalyticsHelpers | undefined;
 
   if (isDev || isLocalhost) {

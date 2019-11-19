@@ -1,5 +1,7 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-restricted-globals */
+/* eslint-disable react/static-property-placement */
+/* eslint-disable react/jsx-props-no-spreading */
 
 import React from 'react';
 import App, { AppProps } from 'next/app';
@@ -7,7 +9,7 @@ import { SingletonRouter } from 'next/router';
 
 import { WithAnalyticsConfig, AnalyticsHelpers } from './types';
 import getDisplayName from './utils/getDisplayName';
-import { initAnalytics } from './analytics';
+import initAnalytics from './analytics';
 
 // This actually follows a similar pattern as https://github.com/sergiodxa/next-ga, but we added
 // an option to let the analytics respect Do Not Track (DNT) requests.
@@ -24,14 +26,12 @@ export interface WithAnalyticsState {
  * will also try to modify `getInitialProps` in all pages. This HOC remains available to ensure
  * backwards compatibility with Next.js 8.
  */
-export function withAnalytics(Router: SingletonRouter, config: WithAnalyticsConfig = {}) {
+export default function withAnalytics(Router: SingletonRouter, config: WithAnalyticsConfig = {}) {
   return (WrappedComponent: typeof App) => {
     return class extends React.Component<AppProps & WithAnalyticsState, WithAnalyticsState> {
-      public static displayName = `withAnalytics(${getDisplayName(WrappedComponent)})`;
-
-      public static getInitialProps = WrappedComponent.getInitialProps || undefined;
-
       public analyticsInstance = initAnalytics(config);
+
+      public static displayName = `withAnalytics(${getDisplayName(WrappedComponent)})`;
 
       public constructor(props: AppProps) {
         super(props);
@@ -58,6 +58,8 @@ export function withAnalytics(Router: SingletonRouter, config: WithAnalyticsConf
 
         Router.events.off('routeChangeComplete', handleRouteChange);
       }
+
+      public static getInitialProps = WrappedComponent.getInitialProps || undefined;
 
       public render() {
         const { analytics } = this.state;

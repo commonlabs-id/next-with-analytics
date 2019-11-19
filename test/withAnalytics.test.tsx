@@ -6,7 +6,7 @@ import { render, cleanup } from '@testing-library/react';
 import Router from 'next/router';
 import { withAnalytics } from '../src/index';
 
-import 'jest-dom/extend-expect';
+import '@testing-library/jest-dom/extend-expect';
 
 jest.mock('next/router', () => ({
   events: {

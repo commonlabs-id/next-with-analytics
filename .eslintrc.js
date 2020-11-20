@@ -27,6 +27,7 @@ module.exports = {
     'dot-notation': 'off',
     'no-undef': 'off',
     'no-unused-vars': 'off',
+    'no-use-before-define': 'off',
     'import/extensions': [
       'error',
       'ignorePackages',
@@ -48,6 +49,10 @@ module.exports = {
     '@typescript-eslint/no-unused-vars': [
       'warn',
       { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
+    ],
+    '@typescript-eslint/no-use-before-define': [
+      'error',
+      { functions: true, classes: true, variables: true },
     ],
   },
   settings: {

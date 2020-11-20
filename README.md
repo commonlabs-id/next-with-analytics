@@ -43,7 +43,7 @@ class MyDocument extends Document {
         <body>
           <Main />
           <NextScript />
-          <AnalyticsScript anonymizeIp />
+          <AnalyticsScript />
         </body>
       </Html>
     );
@@ -139,7 +139,7 @@ Sends a Google Analytics [exception event](https://developers.google.com/analyti
 
 #### gtag
 
-`export function exception(...args: any[]): void`
+`export function gtag(...args: any[]): void`
 
 If none of the helpers fit your use-case, use this helper to call the `gtag()` function manually.
 

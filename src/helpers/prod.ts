@@ -14,9 +14,9 @@ export function pageview(): void {
   }
 }
 
-export function event(category = '', action = ''): void {
+export function event(category = '', action = '', label = '', value?: number): void {
   if (category && action) {
-    ReactGA.event({ category, action });
+    ReactGA.event({ category, action, label, value });
   }
 }
 

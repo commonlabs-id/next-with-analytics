@@ -44,7 +44,9 @@ module.exports = {
       node: {
         extensions: ['.js', '.jsx', '.ts', '.tsx'],
       },
+      typescript: {},
     },
+    'import/extensions': ['.js', '.mjs', '.jsx', '.ts', '.tsx'],
   },
   overrides: [
     {

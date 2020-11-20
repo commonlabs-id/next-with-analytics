@@ -4,6 +4,6 @@
  * @param Component The React component to return the `displayName` of.
  * @returns The `displayName` of the component.
  */
-export default function getDisplayName<P = {}>(Component: React.ComponentType<P>) {
+export default function getDisplayName<P = any>(Component: React.ComponentType<P>): string {
   return Component.displayName || Component.name || 'Component';
 }

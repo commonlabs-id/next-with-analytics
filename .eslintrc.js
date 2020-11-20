@@ -25,15 +25,26 @@ module.exports = {
   },
   rules: {
     'dot-notation': 'off',
-    'jsx-a11y/anchor-is-valid': 'off',
     'no-undef': 'off',
     'no-unused-vars': 'off',
+    'import/extensions': [
+      'error',
+      'ignorePackages',
+      {
+        js: 'never',
+        jsx: 'never',
+        ts: 'never',
+        tsx: 'never',
+      },
+    ],
+    'jsx-a11y/anchor-is-valid': 'off',
     'react/jsx-closing-tag-location': 'off',
     'react/jsx-filename-extension': ['error', { extensions: ['.js', '.jsx', '.tsx'] }],
     'react/jsx-one-expression-per-line': 'off',
     'react/prop-types': 'off',
     '@typescript-eslint/camelcase': 'off',
     '@typescript-eslint/explicit-function-return-type': ['off'],
+    '@typescript-eslint/no-explicit-any': 'off',
     '@typescript-eslint/no-unused-vars': [
       'warn',
       { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
@@ -49,15 +60,6 @@ module.exports = {
     'import/extensions': ['.js', '.mjs', '.jsx', '.ts', '.tsx'],
   },
   overrides: [
-    {
-      files: ['**/*.ts', '**/*.tsx'],
-      parserOptions: {
-        project: './tsconfig.json',
-      },
-      rules: {
-        '@typescript-eslint/no-explicit-any': 'off',
-      },
-    },
     {
       files: ['.eslintrc.js', '*.config.js'],
       parserOptions: { sourceType: 'script' },

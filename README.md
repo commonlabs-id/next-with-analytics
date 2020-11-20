@@ -139,7 +139,7 @@ Sends a Google Analytics [exception event](https://developers.google.com/analyti
 
 #### gtag
 
-`export function gtag(...args: any[]): void`
+`function gtag(...args: any[]): void`
 
 If none of the helpers fit your use-case, use this helper to call the `gtag()` function manually.
 

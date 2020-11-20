@@ -31,7 +31,7 @@ export default function withAnalytics(Router: SingletonRouter, config: WithAnaly
     return class extends React.Component<AppProps & WithAnalyticsState, WithAnalyticsState> {
       public analyticsInstance = initAnalytics(config);
 
-      public static displayName = `withAnalytics(${getDisplayName(WrappedComponent)})`;
+      public static displayName = `withAnalytics(${getDisplayName(WrappedComponent as any)})`;
 
       public constructor(props: AppProps) {
         super(props);

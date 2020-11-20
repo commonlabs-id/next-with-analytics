@@ -36,5 +36,19 @@ jobs:
         with:
           node-version: '12'
       - run: yarn lint && yarn type-check
+
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/cache@v1
+        id: restore-build
+        with:
+          path: '.'
+          key: ${{ github.sha }}
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '12'
       - run: yarn test --coverage
       - run: yarn report-coverage

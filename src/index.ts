@@ -1,7 +1,4 @@
-export { default as initAnalytics } from './analytics';
-export * from './analytics';
+export { default as AnalyticsScript } from './AnalyticsScript';
 
-export { default as withAnalytics } from './withAnalytics';
-export * from './withAnalytics';
-
+export * from './gtag';
 export * from './types';

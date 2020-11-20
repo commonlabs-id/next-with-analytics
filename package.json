@@ -44,6 +44,7 @@
     "react": ">= 16.0.0"
   },
   "dependencies": {
+    "@types/gtag.js": "^0.0.3",
     "react-ga": "^3.2.1"
   },
   "devDependencies": {

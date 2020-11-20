@@ -5,7 +5,7 @@
 
 > Minimalistic analytics helper for Next.js which respects Do Not Track (DNT) headers.
 
-`next-with-analytics` is a tiny HOC that wraps a Next.js application with `react-ga` and some useful analytics helpers. It also allows you to respect Do Not Track (DNT) settings for visitors that have them enabled.
+`next-with-analytics` helps you integrate [Google Analytics](https://analytics.google.com/) on your [Next.js](https://nextjs.org/) app with ease. It also allows you to respect Do Not Track (DNT) settings for visitors that have them enabled.
 
 Other features include:
 
@@ -16,159 +16,84 @@ Other features include:
 
 ```bash
 # yarn
-yarn add @pinjollist/next-with-analytics
+yarn add @commonlabs-id/next-with-analytics
 
 # npm
-npm install --save @pinjollist/next-with-analytics
+npm install --save @commonlabs-id/next-with-analytics
 ```
 
 ## Usage
 
-### Initialising analytics
-
-The `initAnalytics` function will create an [analytics instance](#analytics-instance) with any [options](#options) passed into it. To use it, create a custom `_app` page with the `initAnalytics()` called inside it. You can now use the analytics instance to create a route event listener for tracking pageviews, as well as passing [analytics helper functions](#using-analytics-helpers) into all pages as a prop.
+In the bottom of your `_document.jsx` file, import the `<WithAnalytics />` component. This will load in the `gtag.js` scripts.
 
 ```jsx
-// pages/_app.js
+import Document, { Html, Head, Main, NextScript } from 'next/document';
+import { AnalyticsScript } from '@commonlabs-id/next-with-analytics';
 
-import App from 'next/app';
-import Router from 'next/router';
-import { initAnalytics } from '@pinjollist/next-with-analytics';
-
-const options = {
-  trackingCode: process.env.GOOGLE_ANALYTICS,
-  respectDNT: true,
-};
-const analyticsInstance = initAnalytics(options);
-
-class MyApp extends App {
-  componentDidMount() {
-    const { handleRouteChange } = analyticsInstance;
-
-    // Enable tracking page views for route change
-    Router.events.on('routeChangeComplete', handleRouteChange);
-  }
-
-  componentWillUnmount() {
-    const { handleRouteChange } = analyticsInstance;
-
-    // Disable tracking page views for route change before unmount
-    Router.events.off('routeChangeComplete', handleRouteChange);
+class MyDocument extends Document {
+  static async getInitialProps(ctx) {
+    const initialProps = await Document.getInitialProps(ctx);
+    return { ...initialProps };
   }
 
   render() {
-    const { Component, pageProps } = this.props;
-    // Add the Analytics helpers to all pages.
-    const { analytics } = analyticsInstance;
-
     return (
-      <Container>
-        <Component analytics={analytics} {...pageProps} />
-      </Container>
-    );
-  }
-}
-```
-
-### `withAnalytics` HOC
-
-You can also use the `withAnalytics` HOC to easily wrap your entire app with `next-with-analytics`. To use it, wrap the `_app` page with the HOC, passing the `next/router` instance, and some preferred options.
-
-**IMPORTANT:** Note that on Next.js 9 and above, this will disable the [Automatic Static Optimization](https://nextjs.org/docs#automatic-prerendering) feature, since it will also try to modify `getInitialProps` in all pages. This HOC remains available to ensure backwards compatibility with Next.js 8.
-
-```jsx
-// pages/_app.js
-
-import App from 'next/app';
-import Router from 'next/router';
-import { withAnalytics } from '@pinjollist/next-with-analytics';
-
-const options = {
-  trackingCode: process.env.GOOGLE_ANALYTICS,
-  respectDNT: true,
-};
-const nextWithAnalytics = withAnalytics(Router, options);
-
-class MyApp extends App {
-  static async getInitialProps({ Component, ctx }) {
-    let pageProps = {};
-    if (Component.getInitialProps) {
-      pageProps = await Component.getInitialProps(ctx);
-    }
-    return { pageProps };
-  }
-
-  render() {
-    const { Component, pageProps, analytics } = this.props;
-    return (
-      <Container>
-        <Component analytics={analytics} {...pageProps} />
-      </Container>
+      <Html>
+        <Head />
+        <body>
+          <Main />
+          <NextScript />
+          <AnalyticsScript anonymizeIp />
+        </body>
+      </Html>
     );
   }
 }
 
-export default nextWithAnalytics(MyApp);
+export default MyDocument;
 ```
 
-### Analytics Instance
+### Props
 
-The `initAnalytics()` function creates an analytics instance with any [options](#options) passed into it. It returns an `AnalyticsInstance` object, which contains the following:
+The `WithAnalytics` component accepts these props.
 
-#### `analytics?: AnalyticsHelpers`
-
-An object containing all analytics helper functions. See [Using Analytics helpers](#using-analytics-helpers) to learn more about these helper functions.
-
-#### `handleRouteChange: () => void`
-
-Used to handle analytics pageview tracking after route change. Use it with [Router Events](https://nextjs.org/docs#router-events):
-
-```jsx
-class MyApp extends App {
-  // ...
-
-  componentDidMount() {
-    const { handleRouteChange } = analyticsInstance;
-
-    // Enable tracking page views for route change
-    Router.events.on('routeChangeComplete', handleRouteChange);
-  }
-
-  componentWillUnmount() {
-    const { handleRouteChange } = analyticsInstance;
-
-    // Disable tracking page views for route change before unmount
-    Router.events.off('routeChangeComplete', handleRouteChange);
-  }
+```ts
+export interface WithAnalyticsProps {
+  /**
+   * Load the script with the `async` attribute.
+   */
+  async?: boolean;
+  /**
+   * Your Google Analytics tracking code.
+   */
+  trackingCode: string;
+  /**
+   * Enable IP anonymization.
+   * https://developers.google.com/analytics/devguides/collection/gtagjs/ip-anonymization
+   */
+  anonymizeIp?: boolean;
+  /**
+   * Respect Do Not Track (DNT) headers.
+   */
+  respectDNT?: boolean;
+  /**
+   * If you would like to manually report pageview events (using the `pageview` helper), set this to `true`.
+   */
+  disablePageview?: boolean;
 }
 ```
-
-### Options
-
-#### `trackingCode?: string`
-
-The Google Analytics tracking code of your website. Default: `''`
-
-#### `respectDNT?: boolean`
-
-Set to `true` to make the module respect Do Not Track (DNT). This will prevent `react-ga` to be initialised if your browser has DNT enabled. Default: `false`
-
-#### `anonymizeIp?: boolean`
-
-Set to `true` to enable [\_anonymizeIp](https://support.google.com/analytics/answer/2763052) in Google Analytics, an option which is often important for legal reasons (e.g. GDPR)
 
 ## Using Analytics helpers
 
-You can add the provided Analytics helpers directly into the `analytics` prop in the Next.js `_app` page. Typings for TypeScript projects are also available as `WithAnalyticsState`.
+`next-with-analytics` exports several helper functions to help you interact with Google Analytics. These functions are also fully typed.
 
 ```jsx
 import Link from 'next/link';
+import { event } from '@commonlabs-id/next-with-analytics';
 
 function IndexPage({ analytics }) {
   const handleClick = () => {
-    if (analytics) {
-      analytics.event('Button Click', 'Signup to Platform');
-    }
+    event({ action: 'sign_up' });
   };
 
   return (
@@ -188,27 +113,35 @@ function IndexPage({ analytics }) {
 
 #### init
 
-`function init(trackingCode?: string | undefined): void`
+`function init({ trackingCode, anonymizeIp, disablePageview }: WithAnalyticsConfig): void`
 
 Initializes Next.js analytics.
 
 #### pageview
 
-`function pageview(): void`
+`function pageview(trackingCode: string): void`
 
-Tracks pageview. Can be called e.g. on router location change.
+Sends `page_view` event manually. Can be called e.g. on router location change.
+
+> **Caution:** If you send manual pageviews without disabling pageview measurement, you may end up with pageviews counted twice. For more details, [click here](https://developers.google.com/analytics/devguides/collection/gtagjs/pages#manual_pageviews).
 
 #### event
 
-`function event(category?: string, action?: string): void`
+`function event({ action, category, label, value }: GtagEventConfig): void`
 
-Sends a Google Analytics [event](https://developers.google.com/analytics/devguides/collection/analyticsjs/events).
+Sends a Google Analytics [event](https://developers.google.com/analytics/devguides/collection/gtagjs/events).
 
 #### exception
 
-`function exception(description?: string, fatal?: boolean): void`
+`function exception({ description, fatal = false }: GtagExceptionConfig): void`
 
-Sends a Google Analytics [exception event](https://developers.google.com/analytics/devguides/collection/analyticsjs/exceptions) for tracking exceptions.
+Sends a Google Analytics [exception event](https://developers.google.com/analytics/devguides/collection/gtagjs/exceptions) for tracking exceptions.
+
+#### gtag
+
+`export function exception(...args: any[]): void`
+
+If none of the helpers fit your use-case, use this helper to call the `gtag()` function manually.
 
 ## Contributing
 

@@ -10,7 +10,7 @@ export function pageview(): void {
   }
 }
 
-export function event(category = '', action = ''): void {
+export function event(category = '', action = '', _label = '', _value?: number): void {
   console.log(`[Analytics] Event for category ${category} and action ${action} triggered`);
 }
 
